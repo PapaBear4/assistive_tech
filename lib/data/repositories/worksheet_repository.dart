@@ -25,6 +25,14 @@ class WorksheetRepository {
 
   WorksheetRepository(this._db);
 
+  Stream<List<Worksheet>> watchAllWorksheets() {
+    return (_db.select(_db.worksheets)
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)
+          ]))
+        .watch();
+  }
+
   Future<String> createWorksheet(String title) async {
     final uuid = const Uuid().v4();
     final appDocDir = await getApplicationDocumentsDirectory();
