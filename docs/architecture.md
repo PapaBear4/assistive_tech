@@ -73,3 +73,21 @@ WorksheetRepository worksheetRepository(WorksheetRepositoryRef ref) {
   return WorksheetRepository(ref.watch(appDatabaseProvider));
 }
 ```
+
+## UI Layer (Riverpod & Widgets)
+
+The UI interacts with the Data Layer through Riverpod providers.
+
+### Worksheet Dashboard (`WorksheetListScreen`)
+-   **Purpose**: Displays a list of all worksheets and allows creating new ones.
+-   **State Management**: Uses a `StreamProvider` to watch the list of worksheets from the repository.
+    ```dart
+    final worksheetsStreamProvider = StreamProvider<List<Worksheet>>((ref) {
+      final repository = ref.watch(worksheetRepositoryProvider);
+      return repository.watchAllWorksheets();
+    });
+    ```
+-   **Interaction**:
+    -   **Read**: `ref.watch(worksheetsStreamProvider)` triggers a rebuild whenever the database changes.
+    -   **Write**: The FAB calls `ref.read(worksheetRepositoryProvider).createWorksheet(...)` to insert data.
+
